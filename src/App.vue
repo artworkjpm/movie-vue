@@ -3,8 +3,8 @@
     <NavBarTop />
     <div class="container">
       <div class="row">
-        <div class="col-sm-6 mx-auto mt-4">
-          <keep-alive>
+        <div class="col mx-auto mt-4">
+          <keep-alive include="Home">
             <router-view />
           </keep-alive>
         </div>

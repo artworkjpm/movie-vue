@@ -1,16 +1,16 @@
 <template>
-  <div>
+  <div class="col-lg-6 mx-auto">
     <div>
       <b-form @submit="onSubmit" @reset="onReset">
-        <b-form-input v-model="movie" placeholder="Enter movie title" required></b-form-input>
-        <div class="mt-2">
+        <b-form-input v-model="movie" placeholder="Search for a movie..." required></b-form-input>
+        <div class="mt-4">
           <b-button type="submit" variant="primary mr-2">Search</b-button>
           <b-button type="reset" variant="danger">Clear</b-button>
         </div>
       </b-form>
     </div>
     <div>
-      <table class="table table-striped table-hover mt-2">
+      <table class="table table-striped table-hover mt-4">
         <tbody>
           <tr v-for="item in movies" :key="item.imdbID">
             <td>
@@ -33,6 +33,7 @@
 <script>
 import axios from "axios";
 export default {
+  name: "Home",
   data() {
     return {
       movies: null,
@@ -69,7 +70,7 @@ export default {
     },
     noMoviesFound(movies) {
       if (!movies) {
-        alert("no movies found, try amending your title");
+        alert("no movies found, try the title");
       }
     }
   },
