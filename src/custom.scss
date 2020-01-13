@@ -1,10 +1,23 @@
 @import "node_modules/bootstrap/scss/bootstrap";
 @import "node_modules/bootstrap-vue/src/index.scss";
 
+.imgPoster {
+  height: 200px;
+}
+
 td.noLinkStyle a:hover {
   text-decoration: none;
 }
 
 td.noLinkStyle a {
   color: #343a40;
+}
+
+@media only screen and (max-width: 600px) {
+  h5 {
+    font-size: 1rem; // you can also use px here...
+  }
+  .imgPoster {
+    height: 150px;
+  }
 }

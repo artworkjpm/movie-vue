@@ -3,7 +3,7 @@
     <div>
       <b-form @submit="onSubmit" @reset="onReset">
         <b-form-input v-model="movie" placeholder="Search for a movie..." required></b-form-input>
-        <div class="mt-4">
+        <div class="mt-3">
           <b-button type="submit" variant="primary mr-2">Search</b-button>
           <b-button type="reset" variant="danger">Clear</b-button>
         </div>
@@ -14,12 +14,12 @@
         <tbody>
           <tr v-for="item in movies" :key="item.imdbID">
             <td>
-              <router-link :to="{ name: 'movieDetails', params: { movieName: cleanTitle(item.Title), id: item.imdbID } }"><img :src="item.Poster" alt="" height="200px" /> </router-link>
+              <router-link :to="{ name: 'movieDetails', params: { movieName: cleanTitle(item.Title), id: item.imdbID } }"><img :src="item.Poster" alt="" class="imgPoster" /> </router-link>
             </td>
             <td class="noLinkStyle">
               <router-link :to="{ name: 'movieDetails', params: { movieName: cleanTitle(item.Title), id: item.imdbID } }">
-                <p class="font-weight-bold mt-4">{{ item.Title }}</p>
-                <p>Year: {{ item.Year }}</p>
+                <h5 class="font-weight-bold mt-4">{{ item.Title }}</h5>
+                <p class="mb-0">Year: {{ item.Year }}</p>
                 <p>Type: {{ item.Type | capitalize }}</p>
               </router-link>
             </td>
