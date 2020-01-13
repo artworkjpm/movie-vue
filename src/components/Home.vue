@@ -56,7 +56,7 @@ export default {
       } else {
         this.loading = true;
         axios
-          .get(`http://www.omdbapi.com/?apikey=${apikey}&s=${movie}`)
+          .get(`https://www.omdbapi.com/?apikey=${apikey}&s=${movie}`)
           .then(response => ((this.movies = response.data.Search), this.noMoviesFound(this.movies), (this.loading = false)))
           .catch(error => console.log(error));
       }

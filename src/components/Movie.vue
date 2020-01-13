@@ -54,7 +54,7 @@ export default {
     getMovieId(id) {
       this.loading = true;
       const apikey = "8cc341a0";
-      axios.get(`http://www.omdbapi.com/?apikey=${apikey}&i=${id}`).then(response => this.makeArray(response.data), (this.loading = false));
+      axios.get(`https://www.omdbapi.com/?apikey=${apikey}&i=${id}`).then(response => this.makeArray(response.data), (this.loading = false));
     },
     makeArray(object) {
       this.origArray = object;
@@ -62,7 +62,7 @@ export default {
       this.poster = this.details[13];
       this.ratings = this.details[14];
       this.details.splice(13, 2);
-      console.log(this.poster, this.ratings);
+      //console.log(this.poster, this.ratings);
     }
   },
   mounted() {
