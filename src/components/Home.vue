@@ -10,22 +10,27 @@
       </b-form>
     </div>
     <div>
-      <table class="table table-striped table-hover mt-4">
-        <tbody>
-          <tr v-for="item in movies" :key="item.imdbID">
-            <td>
-              <router-link :to="{ name: 'movieDetails', params: { movieName: cleanTitle(item.Title), id: item.imdbID } }"><img :src="item.Poster" alt="" class="imgPoster" /> </router-link>
-            </td>
-            <td class="noLinkStyle">
-              <router-link :to="{ name: 'movieDetails', params: { movieName: cleanTitle(item.Title), id: item.imdbID } }">
-                <h5 class="font-weight-bold mt-4">{{ item.Title }}</h5>
-                <p class="mb-0">Year: {{ item.Year }}</p>
-                <p>Type: {{ item.Type | capitalize }}</p>
-              </router-link>
-            </td>
-          </tr>
-        </tbody>
-      </table>
+      <div v-if="loading" class="mt-4">
+        <b-spinner label="Spinning"></b-spinner>
+      </div>
+      <div v-if="!loading">
+        <table class="table table-striped table-hover mt-4">
+          <tbody>
+            <tr v-for="item in movies" :key="item.imdbID">
+              <td>
+                <router-link :to="{ name: 'movieDetails', params: { movieName: cleanTitle(item.Title), id: item.imdbID } }"><img :src="item.Poster" alt="" class="imgPoster" /> </router-link>
+              </td>
+              <td class="noLinkStyle">
+                <router-link :to="{ name: 'movieDetails', params: { movieName: cleanTitle(item.Title), id: item.imdbID } }">
+                  <h5 class="font-weight-bold mt-4">{{ item.Title }}</h5>
+                  <p class="mb-0">Year: {{ item.Year }}</p>
+                  <p>Type: {{ item.Type | capitalize }}</p>
+                </router-link>
+              </td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
     </div>
   </div>
 </template>
@@ -37,7 +42,8 @@ export default {
   data() {
     return {
       movies: null,
-      movie: ""
+      movie: "",
+      loading: false
     };
   },
 
@@ -48,9 +54,10 @@ export default {
       if (!movie) {
         alert("Please type in a movie");
       } else {
+        this.loading = true;
         axios
           .get(`http://www.omdbapi.com/?apikey=${apikey}&s=${movie}`)
-          .then(response => ((this.movies = response.data.Search), this.noMoviesFound(this.movies)))
+          .then(response => ((this.movies = response.data.Search), this.noMoviesFound(this.movies), (this.loading = false)))
           .catch(error => console.log(error));
       }
     },
