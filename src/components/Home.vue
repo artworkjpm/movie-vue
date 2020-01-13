@@ -1,16 +1,31 @@
 <template>
   <div>
-    <div>Home page</div>
     <div>
-      <b-form-input v-model="movie" placeholder="Enter your name"></b-form-input>
-      <div class="mt-2">Value: {{ movie }}</div>
+      <b-form @submit="onSubmit" @reset="onReset">
+        <b-form-input v-model="movie" placeholder="Enter movie title" required></b-form-input>
+        <div class="mt-2">
+          <b-button type="submit" variant="primary mr-2">Search</b-button>
+          <b-button type="reset" variant="danger">Clear</b-button>
+        </div>
+      </b-form>
     </div>
     <div>
-      <button @click="submit()">Submit</button>
-    </div>
-    <div>{{ movies }}</div>
-    <div v-for="item in movies" :key="item.imdbID">
-      <router-link :to="{ name: 'movieDetails', params: { movieName: cleanTitle(item.Title), id: item.imdbID } }"><img :src="item.Poster" alt=""/></router-link>
+      <table class="table table-striped table-hover mt-2">
+        <tbody>
+          <tr v-for="item in movies" :key="item.imdbID">
+            <td>
+              <router-link :to="{ name: 'movieDetails', params: { movieName: cleanTitle(item.Title), id: item.imdbID } }"><img :src="item.Poster" alt="" height="200px" /> </router-link>
+            </td>
+            <td class="noLinkStyle">
+              <router-link :to="{ name: 'movieDetails', params: { movieName: cleanTitle(item.Title), id: item.imdbID } }">
+                <p class="font-weight-bold mt-4">{{ item.Title }}</p>
+                <p>Year: {{ item.Year }}</p>
+                <p>Type: {{ item.Type | capitalize }}</p>
+              </router-link>
+            </td>
+          </tr>
+        </tbody>
+      </table>
     </div>
   </div>
 </template>
@@ -44,17 +59,26 @@ export default {
         .replace(/[:,]/g, "")
         .toLowerCase();
     },
-    submit() {
+    onSubmit(evt) {
+      evt.preventDefault();
       this.getMovies();
+    },
+    onReset(evt) {
+      evt.preventDefault();
+      this.movie = null;
     },
     noMoviesFound(movies) {
       if (!movies) {
-        alert("no movies found, try to amend your title");
+        alert("no movies found, try amending your title");
       }
     }
   },
-  created() {
-    //this.getMovies();
+  filters: {
+    capitalize: function(value) {
+      if (!value) return "";
+      value = value.toString();
+      return value.charAt(0).toUpperCase() + value.slice(1);
+    }
   }
 };
 </script>

@@ -1,15 +1,22 @@
 <template>
   <div id="app">
-    <nav>
-      <router-link to="/">Home</router-link> |
-      <router-link to="/about">About</router-link>
-    </nav>
-    <router-view />
+    <NavBarTop />
+    <div class="container">
+      <div class="row">
+        <div class="col-sm-6 mx-auto mt-4">
+          <keep-alive>
+            <router-view />
+          </keep-alive>
+        </div>
+      </div>
+    </div>
   </div>
 </template>
 
 <script>
+import NavBarTop from "./components/NavBarTop";
 export default {
-  name: "app"
+  name: "app",
+  components: { NavBarTop }
 };
 </script>

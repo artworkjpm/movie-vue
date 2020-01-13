@@ -1,2 +1,10 @@
 @import "node_modules/bootstrap/scss/bootstrap";
 @import "node_modules/bootstrap-vue/src/index.scss";
+
+td.noLinkStyle a:hover {
+  text-decoration: none;
+}
+
+td.noLinkStyle a {
+  color: #343a40;
+}
