@@ -1,6 +1,9 @@
 <template>
   <div class="col-lg-6 mx-auto">
     <div>
+      <div class="mb-3">
+        <h6>Standard search (my original design and favourite, films link to more details)</h6>
+      </div>
       <b-form @submit="onSubmit" @reset="onReset">
         <b-form-input v-model="movie" placeholder="Search for a movie..." required></b-form-input>
         <div class="mt-3">
@@ -18,10 +21,16 @@
           <tbody>
             <tr v-for="item in movies" :key="item.imdbID">
               <td>
-                <router-link :to="{ name: 'movieDetails', params: { movieName: cleanTitle(item.Title), id: item.imdbID } }"><img :src="item.Poster" alt="" class="imgPoster" /> </router-link>
+                <router-link
+                  :to="{ name: 'movieDetails', params: { movieName: cleanTitle(item.Title), id: item.imdbID } }"
+                >
+                  <img :src="item.Poster" alt class="imgPoster" />
+                </router-link>
               </td>
               <td class="noLinkStyle">
-                <router-link :to="{ name: 'movieDetails', params: { movieName: cleanTitle(item.Title), id: item.imdbID } }">
+                <router-link
+                  :to="{ name: 'movieDetails', params: { movieName: cleanTitle(item.Title), id: item.imdbID } }"
+                >
                   <h5 class="font-weight-bold mt-4">{{ item.Title }}</h5>
                   <p class="mb-0">Year: {{ item.Year }}</p>
                   <p>Type: {{ item.Type | capitalize }}</p>
@@ -57,7 +66,13 @@ export default {
         this.loading = true;
         axios
           .get(`https://www.omdbapi.com/?apikey=${apikey}&s=${movie}`)
-          .then(response => ((this.movies = response.data.Search), this.noMoviesFound(this.movies), (this.loading = false)))
+          .then(
+            response => (
+              (this.movies = response.data.Search),
+              this.noMoviesFound(this.movies),
+              (this.loading = false)
+            )
+          )
           .catch(error => console.log(error));
       }
     },
