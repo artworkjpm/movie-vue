@@ -2,7 +2,7 @@
   <div class="col-lg-6 mx-auto mb-5">
     <div>
       <div class="mb-3">
-        <h6>Handcoded slider, no frameworks or pluggins (not animated)</h6>
+        <h6>Handcoded slider, no frameworks or pluggins</h6>
       </div>
       <b-form @submit="onSubmit" @reset="onReset">
         <b-form-input v-model="movie" placeholder="Search for a movie..." required></b-form-input>
@@ -12,7 +12,10 @@
         </div>
       </b-form>
     </div>
-    <div id="slide" class="mx-auto mt-4">
+    <div v-if="loading" class="mt-4">
+      <b-spinner label="Spinning"></b-spinner>
+    </div>
+    <div v-if="!loading" id="slide" class="mx-auto mt-4">
       <div v-for="(item, index) in moviesArray" :key="index">
         <img :src="item.poster" height="400" width="280" />
         <div class="filmText">
@@ -26,6 +29,8 @@
     <div class="control mt-2 mx-auto" v-if="moviesArray.length > 0">
       <div class="col-6" @click="previous">PREVIOUS</div>
       <div class="col-6 text-right" @click="next">NEXT</div>
+      <div @click="stop">stop</div>
+      <div @click="timer">start</div>
     </div>
   </div>
 </template>
@@ -41,7 +46,8 @@ export default {
       count: 1,
       direction: "forward",
       frame: 1,
-      moviesArray: []
+      moviesArray: [],
+      interval: null
     };
   },
   methods: {
@@ -59,8 +65,7 @@ export default {
           .then(
             movies => (
               !movies && this.noMoviesFound(movies),
-              movies && this.getDirector(movies),
-              (this.loading = false)
+              movies && this.getDirector(movies)
             )
           )
           .catch(error => console.log(error));
@@ -80,18 +85,25 @@ export default {
               filmID: response.data.imdbID,
               director: response.data.Director
             });
-          });
+          }, (this.loading = false));
       });
-      //this.timer();
+      this.timer();
       console.log(this.moviesArray);
     },
 
     timer() {
-      setInterval(() => this.slideLoop(this.direction), 4000);
+      if (this.count !== this.moviesArray.length) {
+        this.interval = setInterval(() => this.next(), 4000);
+        this.interval();
+      } else {
+        clearInterval(this.interval);
+      }
+    },
+    stop() {
+      clearInterval(this.interval);
     },
     onSubmit(evt) {
       evt.preventDefault();
-      clearInterval(this.timer);
       this.getMovies();
     },
     onReset(evt) {
@@ -108,6 +120,7 @@ export default {
       if (this.count !== 1) {
         this.count -= 1;
         this.scroll("previous");
+        this.stop();
       }
     },
     next() {
@@ -117,7 +130,6 @@ export default {
       }
     },
     scroll(position) {
-      clearInterval();
       let el = document.getElementById("slide");
       let pos = 0;
       let id = setInterval(frame, 5);

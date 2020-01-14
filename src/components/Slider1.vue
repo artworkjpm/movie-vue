@@ -89,8 +89,7 @@ export default {
           .then(
             movies => (
               !movies && this.noMoviesFound(movies),
-              movies && this.getDirector(movies),
-              (this.loading = false)
+              movies && this.getDirector(movies)
             )
           )
           .catch(error => console.log(error));
@@ -116,7 +115,7 @@ export default {
               filmID: response.data.imdbID,
               director: response.data.Director
             });
-          });
+          }, (this.loading = false));
       });
 
       //console.log(this.moviesArray);

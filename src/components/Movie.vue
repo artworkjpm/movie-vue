@@ -3,7 +3,7 @@
     <div v-if="loading" class="mt-4">
       <b-spinner label="Spinning"></b-spinner>
     </div>
-    <pre v-html="origArray"></pre>
+    <!-- <pre v-html="origArray"></pre> -->
     <div class="row" v-if="!loading">
       <div class="col-lg-4">
         <img :src="poster[1]" alt="details.Title" />

@@ -19,21 +19,22 @@
       <div v-if="!loading">
         <table class="table table-striped table-hover mt-4">
           <tbody>
-            <tr v-for="item in movies" :key="item.imdbID">
+            <tr v-for="item in moviesArray" :key="item.filmID">
               <td>
                 <router-link
-                  :to="{ name: 'movieDetails', params: { movieName: cleanTitle(item.Title), id: item.imdbID } }"
+                  :to="{ name: 'movieDetails', params: { movieName: cleanTitle(item.title), id: item.filmID } }"
                 >
-                  <img :src="item.Poster" alt class="imgPoster" />
+                  <img :src="item.poster" alt class="imgPoster" />
                 </router-link>
               </td>
               <td class="noLinkStyle">
                 <router-link
-                  :to="{ name: 'movieDetails', params: { movieName: cleanTitle(item.Title), id: item.imdbID } }"
+                  :to="{ name: 'movieDetails', params: { movieName: cleanTitle(item.title), id: item.filmID } }"
                 >
-                  <h5 class="font-weight-bold mt-4">{{ item.Title }}</h5>
-                  <p class="mb-0">Year: {{ item.Year }}</p>
-                  <p>Type: {{ item.Type | capitalize }}</p>
+                  <h5 class="font-weight-bold mt-4">{{ item.title }}</h5>
+                  <p class="mb-0">Year: {{ item.year }}</p>
+                  <p>Type: {{ item.type | capitalize }}</p>
+                  <p>Dir: {{item.director}}</p>
                 </router-link>
               </td>
             </tr>
@@ -50,7 +51,7 @@ export default {
   name: "Home",
   data() {
     return {
-      movies: null,
+      moviesArray: [],
       movie: "",
       loading: false
     };
@@ -66,15 +67,34 @@ export default {
         this.loading = true;
         axios
           .get(`https://www.omdbapi.com/?apikey=${apikey}&s=${movie}`)
+          .then(response => response.data.Search)
           .then(
-            response => (
-              (this.movies = response.data.Search),
-              this.noMoviesFound(this.movies),
+            movies => (
+              !movies && this.noMoviesFound(movies),
+              movies && this.getDirector(movies),
               (this.loading = false)
             )
           )
           .catch(error => console.log(error));
       }
+    },
+    getDirector(movies) {
+      //console.log(movies);
+      movies.forEach(id => {
+        const apikey = "8cc341a0";
+        axios
+          .get(`https://www.omdbapi.com/?apikey=${apikey}&i=${id.imdbID}`)
+          .then(response => {
+            return this.moviesArray.push({
+              title: response.data.Title,
+              poster: response.data.Poster,
+              year: response.data.Year,
+              filmID: response.data.imdbID,
+              director: response.data.Director,
+              type: response.data.Type
+            });
+          });
+      });
     },
     cleanTitle(title) {
       return title
