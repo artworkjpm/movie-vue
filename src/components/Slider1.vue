@@ -36,16 +36,20 @@
           >
             <b-carousel-slide v-for="item in moviesArray" :key="item.filmID">
               <template v-slot:img>
-                <div>
+                <router-link
+                  :to="{ name: 'movieDetails', params: { movieName: cleanTitle(item.title), id: item.filmID } }"
+                >
                   <div>
-                    <img :src="item.poster" alt="image slot" height="300px" />
+                    <div>
+                      <img :src="item.poster" alt="image slot" height="300px" />
+                    </div>
+                    <div class="innerText">
+                      <p class="font-weight-bold mb-0">{{ item.title }}</p>
+                      <p class="mb-0">{{ item.year }}</p>
+                      <p>Dir: {{item.director}}</p>
+                    </div>
                   </div>
-                  <div class="innerText">
-                    <p class="font-weight-bold mb-0">{{ item.title }}</p>
-                    <p class="mb-0">{{ item.year }}</p>
-                    <p>Dir: {{item.director}}</p>
-                  </div>
-                </div>
+                </router-link>
               </template>
             </b-carousel-slide>
           </b-carousel>
@@ -131,6 +135,12 @@ export default {
     noMoviesFound() {
       alert("no movies found, is your movie title correct?");
       this.loading = false;
+    },
+    cleanTitle(title) {
+      return title
+        .replace(/ /g, "-")
+        .replace(/[:,]/g, "")
+        .toLowerCase();
     }
   }
 };

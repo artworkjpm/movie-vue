@@ -2,7 +2,7 @@
   <div class="col-lg-6 mx-auto">
     <div>
       <div class="mb-3">
-        <h6>Standard search (my original design and favourite, films link to more details)</h6>
+        <h6>Standard search (my original design - the films link to description page)</h6>
       </div>
       <b-form @submit="onSubmit" @reset="onReset">
         <b-form-input v-model="movie" placeholder="Search for a movie..." required></b-form-input>

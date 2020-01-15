@@ -2,7 +2,7 @@
   <div class="col-lg-6 mx-auto mb-5">
     <div>
       <div class="mb-3">
-        <h6>Handcoded slider, no frameworks or pluggins</h6>
+        <h6>Handcoded slider, no frameworks or pluggins, films link to desc page</h6>
       </div>
       <b-form @submit="onSubmit" @reset="onReset">
         <b-form-input v-model="movie" placeholder="Search for a movie..." required></b-form-input>
@@ -15,22 +15,36 @@
     <div v-if="loading" class="mt-4">
       <b-spinner label="Spinning"></b-spinner>
     </div>
-    <div v-if="!loading" id="slide" class="mx-auto mt-4">
-      <div v-for="(item, index) in moviesArray" :key="index">
-        <img :src="item.poster" height="400" width="280" />
-        <div class="filmText">
-          <h6>{{item.title}}</h6>
-          <p>{{item.year}}, Dir: {{item.director}}</p>
-          <p>{{count}} | {{moviesArray.length}}</p>
-          <a></a>
+    <div v-if="!loading">
+      <div id="slide" class="mx-auto mt-4">
+        <div v-for="(item, index) in moviesArray" :key="index">
+          <router-link
+            :to="{ name: 'movieDetails', params: { movieName: cleanTitle(item.title), id: item.filmID } }"
+          >
+            <img :src="item.poster" height="400" width="280" />
+          </router-link>
+          <div class="filmText">
+            <h6>{{item.title}}</h6>
+            <p>{{item.year}} | Dir: {{item.director}}</p>
+            <p>{{count}} of {{moviesArray.length}}</p>
+            <a></a>
+          </div>
         </div>
       </div>
-    </div>
-    <div class="control mt-2 mx-auto" v-if="moviesArray.length > 0">
-      <div class="col-6" @click="previous">PREVIOUS</div>
-      <div class="col-6 text-right" @click="next">NEXT</div>
-      <div @click="stop">stop</div>
-      <div @click="timer">start</div>
+      <div class="control mt-2 mx-auto" v-if="moviesArray.length > 0">
+        <div class="col-4 h1" @click="prevButton">
+          <b-icon-chevron-left />
+        </div>
+        <div class="col-4 h1 text-center" v-if="showPause">
+          <b-icon-pause @click="stop"></b-icon-pause>
+        </div>
+        <div class="col-4 h1 text-center" v-if="!showPause">
+          <b-icon-play @click="start"></b-icon-play>
+        </div>
+        <div class="col-4 text-right h1" @click="nextButton">
+          <b-icon-chevron-right />
+        </div>
+      </div>
     </div>
   </div>
 </template>
@@ -47,7 +61,8 @@ export default {
       direction: "forward",
       frame: 1,
       moviesArray: [],
-      interval: null
+      interval: null,
+      showPause: false
     };
   },
   methods: {
@@ -72,7 +87,6 @@ export default {
       }
     },
     getDirector(movies) {
-      //console.log(movies);
       movies.forEach(id => {
         const apikey = "8cc341a0";
         axios
@@ -85,25 +99,30 @@ export default {
               filmID: response.data.imdbID,
               director: response.data.Director
             });
-          }, (this.loading = false));
+          });
       });
       this.timer();
-      console.log(this.moviesArray);
     },
 
     timer() {
-      if (this.count !== this.moviesArray.length) {
-        this.interval = setInterval(() => this.next(), 4000);
-        this.interval();
-      } else {
-        clearInterval(this.interval);
-      }
+      this.interval = setInterval(() => this.next(), 4000);
+      this.interval;
+      this.loading = false;
+    },
+    start() {
+      this.next();
+      this.timer();
+      this.showPause = !this.showPause;
     },
     stop() {
       clearInterval(this.interval);
+      this.showPause = !this.showPause;
     },
     onSubmit(evt) {
       evt.preventDefault();
+      this.count = 1;
+      this.showPause = false;
+      this.stop();
       this.getMovies();
     },
     onReset(evt) {
@@ -116,17 +135,43 @@ export default {
     },
 
     /* SLIDER CODE */
+    prevButton() {
+      if (this.count !== 1) {
+        this.count -= 1;
+        this.showPause = true;
+        this.scroll("previous");
+        this.stop();
+      }
+    },
+    nextButton() {
+      if (this.count < this.moviesArray.length) {
+        this.count += 1;
+        this.showPause = true;
+        this.scroll("next");
+        this.stop();
+      }
+    },
+
     previous() {
       if (this.count !== 1) {
         this.count -= 1;
         this.scroll("previous");
-        this.stop();
+        this.showPause = true;
+      }
+      if (this.count === 1) {
+        clearInterval(this.interval);
+        this.timer();
       }
     },
     next() {
       if (this.count < this.moviesArray.length) {
         this.count += 1;
         this.scroll("next");
+      }
+      if (this.count === this.moviesArray.length) {
+        clearInterval(this.interval);
+        this.interval = setInterval(() => this.previous(), 4000);
+        this.interval;
       }
     },
     scroll(position) {
@@ -149,28 +194,13 @@ export default {
           }
         }
       }
-    }
-    /* slideLoop() {
-      console.log(this.direction);
-
-      if (
-        this.direction === "forward" &&
-        this.count !== this.moviesArray.length
-      ) {
-        this.next();
-      } else if (this.count !== 1) {
-        this.direction = "backward";
-        this.previous();
-      } else {
-        this.direction = "forward";
-        this.next();
-      }
     },
-    resetScroll() {
-      this.count = 0;
-      this.direction = "forward";
-      this.scroll("reset");
-    } */
+    cleanTitle(title) {
+      return title
+        .replace(/ /g, "-")
+        .replace(/[:,]/g, "")
+        .toLowerCase();
+    }
   }
 };
 </script>
