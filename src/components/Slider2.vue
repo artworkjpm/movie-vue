@@ -205,6 +205,7 @@ export default {
   //after clicking back from film details, I had to reset the counter and stop the timer
   beforeRouteLeave(to, from, next) {
     this.count = 1;
+    this.showPause = true;
     this.stop();
     next();
   }
