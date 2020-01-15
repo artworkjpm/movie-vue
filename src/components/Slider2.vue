@@ -2,7 +2,7 @@
   <div class="col-lg-6 mx-auto mb-5">
     <div>
       <div class="mb-3">
-        <h6>Handcoded slider, no frameworks or pluggins, films link to desc page</h6>
+        <h6>Handcoded slider, no frameworks or pluggins, films link to desc page, when you come back, the search is saved</h6>
       </div>
       <b-form @submit="onSubmit" @reset="onReset">
         <b-form-input v-model="movie" placeholder="Search for a movie..." required></b-form-input>
@@ -26,7 +26,7 @@
           <div class="filmText">
             <h6>{{item.title}}</h6>
             <p>{{item.year}} | Dir: {{item.director}}</p>
-            <p>{{count}} of {{moviesArray.length}}</p>
+            <p>{{index+1}} of {{moviesArray.length}}</p>
             <a></a>
           </div>
         </div>
@@ -201,6 +201,12 @@ export default {
         .replace(/[:,]/g, "")
         .toLowerCase();
     }
+  },
+  //after clicking back from film details, I had to reset the counter and stop the timer
+  beforeRouteLeave(to, from, next) {
+    this.count = 1;
+    this.stop();
+    next();
   }
 };
 </script>
