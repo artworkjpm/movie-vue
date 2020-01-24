@@ -108,7 +108,7 @@ export default {
     getDirector(movies) {
       //console.log(movies);
       movies.forEach(id => {
-        const apikey = "8cc341a0";
+        const apikey = process.env.VUE_APP_JPM_MOVIE_TOKEN;
         axios
           .get(`https://www.omdbapi.com/?apikey=${apikey}&i=${id.imdbID}`)
           .then(response => {
